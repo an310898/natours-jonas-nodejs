@@ -12,8 +12,17 @@ const tours = JSON.parse(
   )
 );
 
+app.use((req, res, next) => {
+  req.user = { name: "An" };
+  req.requestTimer = new Date().toISOString();
+  next();
+});
+
 app.get("/api/v1/tours", (req, res) => {
-  res.status(200).json({ status: "success", data: { tours } });
+  console.log(req.user);
+  res
+    .status(200)
+    .json({ status: "success", time: req.requestTimer, data: { tours } });
 });
 
 app.get("/api/v1/tours/:id", (req, res) => {
