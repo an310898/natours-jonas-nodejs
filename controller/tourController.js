@@ -7,6 +7,12 @@ const tours = JSON.parse(
   )
 );
 
+const checkId = (req, res, next, val) => {
+  if (tours.find((x) => x.id === +val)) {
+    return res.status(404).json({ status: "Not found at middleware" });
+  }
+};
+
 const getAllTours = (req, res) => {
   res
     .status(200)
@@ -85,4 +91,5 @@ module.exports = {
   updateTour,
   createNewTour,
   deleteTour,
+  checkId,
 };
