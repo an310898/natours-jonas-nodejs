@@ -11,6 +11,7 @@ const {
 
 const router = express.Router();
 
+//* middleware param to check before go to another middleware
 router.param("id", checkId);
 
 router.get("/", getAllTours);

@@ -8,11 +8,12 @@ const tours = JSON.parse(
 );
 
 const checkId = (req, res, next, val) => {
-  if (tours.find((x) => x.id === +val)) {
+  if (!tours.find((x) => x.id === +val)) {
     return res
       .status(404)
       .json({ status: "Fail", message: "Not found at middleware" });
   }
+  next();
 };
 
 const getAllTours = (req, res) => {
