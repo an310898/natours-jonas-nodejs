@@ -8,7 +8,8 @@ const app = express();
 //* 1) Middlewares
 //* use middleware to read respond from Post body request
 app.use(express.json());
-
+//* serve static file instead of route
+app.use(express.static(`${__dirname}/public`));
 //* 3rd-party Middleware
 app.use(morgan("dev"));
 
