@@ -9,7 +9,9 @@ const tours = JSON.parse(
 
 const checkId = (req, res, next, val) => {
   if (tours.find((x) => x.id === +val)) {
-    return res.status(404).json({ status: "Not found at middleware" });
+    return res
+      .status(404)
+      .json({ status: "Fail", message: "Not found at middleware" });
   }
 };
 
@@ -21,10 +23,7 @@ const getAllTours = (req, res) => {
 
 const getTour = (req, res) => {
   const tour = tours.find((x) => +x.id === +req.params.id);
-  if (tour) {
-    return res.status(200).json({ status: "success", data: { tour } });
-  }
-  return res.status(404).json({ status: "Not found" });
+  return res.status(200).json({ status: "success", data: { tour } });
 };
 
 const createNewTour = (req, res) => {
@@ -66,11 +65,7 @@ const updateTour = (req, res) => {
 };
 const deleteTour = (req, res) => {
   const tour = tours.find((x) => +x.id === +req.params.id);
-  if (!tour) {
-    return res
-      .status(404)
-      .json({ status: "failed", message: "Tour Id not found!" });
-  }
+
   const newArrTour = tours.filter((x) => +x.id !== +req.params.id);
 
   fs.writeFile(
