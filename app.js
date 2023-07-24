@@ -1,9 +1,23 @@
 const express = require("express");
 const fs = require("fs");
+const morgan = require("morgan");
+
 const app = express();
 
+//* 1) Middlewares
 //* use middleware to read respond from Post body request
 app.use(express.json());
+
+//* 3rd-party Middleware
+app.use(morgan("dev"));
+
+app.use((req, res, next) => {
+  req.user = { name: "An" };
+  req.requestTimer = new Date().toISOString();
+  next();
+});
+
+//* Route Handlers
 
 const tours = JSON.parse(
   fs.readFileSync(
@@ -12,14 +26,8 @@ const tours = JSON.parse(
   )
 );
 
-app.use((req, res, next) => {
-  req.user = { name: "An" };
-  req.requestTimer = new Date().toISOString();
-  next();
-});
-
 app.get("/api/v1/tours", (req, res) => {
-  console.log(req.user);
+  //   console.log(req.user);
   res
     .status(200)
     .json({ status: "success", time: req.requestTimer, data: { tours } });
@@ -93,6 +101,7 @@ app.delete("/api/v1/tours/:id", (req, res) => {
   );
 });
 
+//* Start server
 const port = 3000;
 app.listen(port, () => {
   console.log(`App running on port ${port}`);
