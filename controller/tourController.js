@@ -1,5 +1,6 @@
 const fs = require("fs");
 const path = require("path");
+
 const tours = JSON.parse(
   fs.readFileSync(
     path.join(path.dirname(__dirname), "dev-data", "data", "tours-simple.json"),
@@ -44,7 +45,7 @@ const createNewTour = (req, res) => {
   fs.writeFile(
     `${__dirname}/dev-data/data/tours-simple.json`,
     JSON.stringify(tours),
-    (err) => {
+    () => {
       res.status(201).json({ status: "success", data: { tour: newTours } });
     }
   );
@@ -74,8 +75,6 @@ const updateTour = (req, res) => {
   );
 };
 const deleteTour = (req, res) => {
-  const tour = tours.find((x) => +x.id === +req.params.id);
-
   const newArrTour = tours.filter((x) => +x.id !== +req.params.id);
 
   fs.writeFile(

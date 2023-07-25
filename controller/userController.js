@@ -1,5 +1,6 @@
 const fs = require("fs");
 const path = require("path");
+
 const users = JSON.parse(
   fs.readFileSync(
     `${path.dirname(__dirname)}/dev-data/data/users.json`,
@@ -29,7 +30,7 @@ const createNewUser = (req, res) => {
   fs.writeFile(
     `${__dirname}/dev-data/data/tours-simple.json`,
     JSON.stringify(users),
-    (err) => {
+    () => {
       res.status(201).json({
         status: "success",
         time: req.requestTimer,
