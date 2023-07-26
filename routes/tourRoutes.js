@@ -7,6 +7,8 @@ const router = express.Router();
 //* middleware param to check before go to another middleware
 router.param("id", tourController.checkId);
 
+router.post("/import-tour", tourController.importTour);
+
 router
   .route("/")
   .get(tourController.getAllTours)

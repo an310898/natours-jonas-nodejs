@@ -1,3 +1,6 @@
+const fs = require("fs");
+const path = require("path");
+
 const { Tour, isValidObjectId } = require("../models/tour");
 
 const checkId = (req, res, next) => {
@@ -107,6 +110,30 @@ const deleteTour = async (req, res) => {
   }
 };
 
+const importTour = async (req, res) => {
+  await Tour.collection.drop();
+
+  fs.readFile(
+    path.join(path.dirname(__dirname), "dev-data", "data", "tours-simple.json"),
+    async (err, content) => {
+      try {
+        const newTour = await Tour.create(JSON.parse(content));
+        return res.status(201).json({
+          status: "success",
+          data: {
+            tour: newTour,
+          },
+        });
+      } catch (error) {
+        res.status(400).json({
+          status: "fail",
+          message: error,
+        });
+      }
+    }
+  );
+};
+
 module.exports = {
   getAllTours,
   getTour,
@@ -114,4 +141,5 @@ module.exports = {
   createNewTour,
   deleteTour,
   checkId,
+  importTour,
 };
