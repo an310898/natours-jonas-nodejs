@@ -14,14 +14,25 @@ const checkId = (req, res, next) => {
 };
 
 const getAllTours = async (req, res) => {
-  const tours = await Tour.find();
+  const queryParam = { ...req.query };
+  const excludeParam = ["sort", "page", "limit"];
+  excludeParam.forEach((el) => delete queryParam[el]);
 
-  res.status(200).json({
-    status: "success",
-    data: {
-      tours,
-    },
-  });
+  try {
+    const tours = await Tour.find(queryParam);
+    res.status(200).json({
+      status: "success",
+      dataLength: tours.length,
+      data: {
+        tours,
+      },
+    });
+  } catch (error) {
+    res.status(400).json({
+      status: "fail",
+      message: error,
+    });
+  }
 };
 
 const getTour = async (req, res, next) => {
