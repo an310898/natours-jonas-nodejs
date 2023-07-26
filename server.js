@@ -1,8 +1,9 @@
 const dotenv = require("dotenv");
-const app = require("./app");
-const mongooseDb = require("./util/database");
 
 dotenv.config({ path: "./config.env" });
+
+const app = require("./app");
+const mongooseDb = require("./util/database");
 
 mongooseDb.then(() => {
   console.log("Connect successful to mongoose db");
