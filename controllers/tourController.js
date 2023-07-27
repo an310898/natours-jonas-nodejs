@@ -13,6 +13,13 @@ const checkId = (req, res, next) => {
   });
 };
 
+const aliasTopCheapTour = (req, res, next) => {
+  req.query.limit = 5;
+  req.query.sort = "price,-ratingsAverage";
+  req.query.fields = "name,price,ratingsAverage,summary";
+  next();
+};
+
 const getAllTours = async (req, res) => {
   const queryParam = { ...req.query };
   //* filtering
@@ -199,4 +206,5 @@ module.exports = {
   deleteTour,
   checkId,
   importTour,
+  aliasTopCheapTour,
 };
