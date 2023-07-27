@@ -15,11 +15,57 @@ const checkId = (req, res, next) => {
 
 const getAllTours = async (req, res) => {
   const queryParam = { ...req.query };
-  const excludeParam = ["sort", "page", "limit"];
+  //* filtering
+  const excludeParam = ["sort", "page", "limit", "fields"];
   excludeParam.forEach((el) => delete queryParam[el]);
 
+  //* advanced filtering
+  const queryString = JSON.stringify(queryParam).replace(
+    /\b(lt|lte|gt|gte)\b/g,
+    (match) => `$${match}`
+  );
   try {
-    const tours = await Tour.find(queryParam);
+    let query = Tour.find(JSON.parse(queryString));
+
+    //* fields limit
+    if (req.query.fields) {
+      const fields = req.query.fields.split(",").join(" ");
+      query = query.select(fields);
+    } else {
+      query = query.select("-__v");
+    }
+
+    //* pagination
+    const page = +req.query.page || 1;
+    const limit = +req.query.limit || 100;
+    const skip = (page - 1) * limit;
+
+    const dataLength = await Tour.estimatedDocumentCount();
+
+    if (skip >= dataLength) {
+      return res.status(400).json({
+        status: "fail",
+        message: "page not exist",
+      });
+    }
+    query = query.skip(skip).limit(limit);
+
+    //* sorting
+    /*
+        if data in collection have a same time with createdAt so it will broken
+        so we need to add second sort param to fix it
+    */
+    if (req.query.sort) {
+      let sortBy = req.query.sort.split(",").join(" ");
+      if (sortBy.includes("createdAt")) {
+        sortBy += "_id";
+      }
+      query = query.sort(sortBy);
+    } else {
+      query = query.sort("-createdAt _id");
+    }
+
+    const tours = await query;
     res.status(200).json({
       status: "success",
       dataLength: tours.length,
